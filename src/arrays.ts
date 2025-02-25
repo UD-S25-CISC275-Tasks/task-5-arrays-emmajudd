@@ -97,19 +97,14 @@ export function makeMath(addends: number[]): string {
 export function injectPositive(values: number[]): number[] {
     let sum = 0;
     let placed = false;
-    const result = [];
-    values.forEach(value => {
-        result.push(value);
+
+    const result = values.reduce<number[]>((acc, value) => {
         if (value < 0 && !placed) {
-            result.push(sum);
             placed = true;
-        } else {
-            sum += value;
+            return [...acc, value, sum];
         }
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!placed) {
-        result.push(sum);
-    }
-    return result;
+        sum += value;
+        return [...acc, value]}, 
+        []);
+    return result.length === values.length ? [...result, sum] : result;
 }
